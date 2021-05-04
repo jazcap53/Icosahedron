@@ -47,10 +47,10 @@ class Icosahedron:
     second_colors: iter = field(init=False)  # yields [int]: list of blue faces
     dict_face_names_to_faces: dict = field(init=False)
 
-    def __init__(self, blues: int):  # blues: c.l.a., defaults to 4
+    def __init__(self, blues: int):  # blues: c.l.a., defaults to 7
         self.__post_init__(blues)
 
-    def __post_init__(self, blues: int):  # blues: c.l.a., defaults to 4
+    def __post_init__(self, blues: int):  # blues: c.l.a., defaults to 7
         self.face_names = [list(self.face_string[0:5]),  # the top 5 faces, with a vertex at the top
                            list(self.face_string[5: 10]),  # 5 downward pointing triangles
                            list(self.face_string[10: 15]), # 5 upward pointing triangles
@@ -169,7 +169,7 @@ class Icosahedron:
 def main():
     """Run the program"""
     parser = argparse.ArgumentParser(description='Explore the icosahedron')
-    parser.add_argument('--blue', '-b', type=int, default=4,
+    parser.add_argument('--blue', '-b', type=int, default=7,
                         help='Number of blue faces in a red icosahedron')
     args = parser.parse_args()
     i_1 = Icosahedron(args.blue)
