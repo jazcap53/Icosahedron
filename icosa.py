@@ -52,8 +52,8 @@ class Icosahedron:
 
     def __post_init__(self, blues: int):  # blues: c.l.a., defaults to 4
         self.face_names = [list(self.face_string[0:5]),  # the top 5 faces, with a vertex at the top
-                           list(self.face_string[5: 14: 2]),  # 2 'rows' in between
-                           list(self.face_string[6: 15: 2]),
+                           list(self.face_string[5: 10]),  # 5 downward pointing triangles
+                           list(self.face_string[10: 15]), # 5 upward pointing triangles
                            list(self.face_string[15:])]  # the bottom 5 faces, with a vertex at the bottom
         # flatten self.face_names
         self.faces = [Triangle(face)
@@ -66,11 +66,7 @@ class Icosahedron:
                                    for i in range(len(self.face_string))}
 
     def __str__(self):
-        # return '\n'.join([face.__str__() for face in self.faces])
-        ret = ''
-        for k in self.adj_list.keys():
-            ret += k + ': ' + ','.join(self.adj_list[k]) + '\n'
-        return ret
+        return '\n'.join([face.__str__() for face in self.faces])
 
     def set_colors(self):
         """Set colors to the next combination we will test """
@@ -90,10 +86,10 @@ class Icosahedron:
 
     def make_adj_list(self):
         """Map each face name to the names of its neighbors"""
-        row_0_faces = self.face_names[0]  # row_0_faces: a list of 5 elements (triangles) radiating around the top point
-        row_1_faces = self.face_names[1]  # row_1_faces: a list of 5 downward-pointing triangles, each sharing an edge with an element from row_0_faces
-        row_2_faces = self.face_names[2]  # row_2_faces: a list of 5 upward-pointing triangles, each sharing an edge with an element from row_3_faces
-        row_3_faces = self.face_names[3]  # row_3_faces: a list of 5 elements radiating around the bottom point
+        row_0_faces = self.face_names[0]
+        row_1_faces = self.face_names[1]
+        row_2_faces = self.face_names[2]
+        row_3_faces = self.face_names[3]
         self.adj_list = {}
         for index, val in enumerate(row_0_faces):
             self.adj_list[val] = [self.get_next_face_this_row(row_0_faces, index)]
@@ -103,14 +99,12 @@ class Icosahedron:
         for index, val in enumerate(row_1_faces):
             self.adj_list[val] = [row_0_faces[index]]
             self.adj_list[val].extend(self.get_other_adjacent_faces(
-                                      row_1_faces,
                                       row_2_faces,
                                       index))
             self.adj_list[val].sort()
         for index, val in enumerate(row_2_faces):
             self.adj_list[val] = [row_3_faces[index]]
             self.adj_list[val].extend(self.get_other_adjacent_faces(
-                                      row_2_faces,
                                       row_1_faces,
                                       index))
             self.adj_list[val].sort()
@@ -120,11 +114,9 @@ class Icosahedron:
             self.adj_list[val].append(row_2_faces[index])
             self.adj_list[val].sort()
 
-    def get_other_adjacent_faces(self, this_row_faces, other_row_faces, index):
+    def get_other_adjacent_faces(self, other_row_faces, index):
         """Retrieve adjacent faces from other row"""
-        return [  # self.get_prev_face_this_row(this_row_faces, index),
-                  # self.get_next_face_this_row(this_row_faces, index),
-                self.get_prev_face_other_row(other_row_faces, index),
+        return [self.get_prev_face_other_row(other_row_faces, index),
                 self.get_next_face_other_row(other_row_faces, index)]
 
     @staticmethod
@@ -182,8 +174,6 @@ def main():
     args = parser.parse_args()
     i_1 = Icosahedron(args.blue)
     i_1.search_colors()
-    print()
-    print(i_1)
 
 
 if __name__ == '__main__':
